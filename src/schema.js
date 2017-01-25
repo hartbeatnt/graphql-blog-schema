@@ -1,8 +1,8 @@
 // import * as _ from 'underscore';
 
 // This is the Dataset in our blog
-// import PostsList from './data/posts';
-// import AuthorsList from './data/authors';
+import PostsList from './data/posts';
+import AuthorsList from './data/authors';
 // import {CommentList, ReplyList} from './data/comments';
 
 import {
@@ -25,12 +25,32 @@ import {
   DEFINE YOUR TYPES BELOW
 **/
 
+const Author = new GraphQLObjectType({
+  name: 'Author',
+  description: 'This is an author, SON!',
+  fields: () => ({
+    _id: {type: new GraphQLNonNull(GraphQLString)},
+    name: {type: GraphQLString}
+  })  
+})
+
 const Post = new GraphQLObjectType({
   name: "Post",
   description: "This is a post, son!",
   fields: () => ({
     _id: {type: new GraphQLNonNull(GraphQLString)},
-    title: {type: GraphQLNonNull(GraphQLString)},
+    title: {
+      type: new GraphQLNonNull(GraphQLString),
+      resolve: function(post) {
+        return post.title || 'NAH, SON!'
+      }
+    },
+    author: {
+      type: Author,
+      resolve: function(post) {
+        return AuthorsList.find(a => a._id == post.author);
+      }
+    },
     content: {type: GraphQLString}
   })
 });
@@ -43,7 +63,7 @@ const Query = new GraphQLObjectType({
     posts:  {
       type: new GraphQLList(Post),
       resolve: function() {
-        return PostsList
+        return [{_id: "some-id"}]
       }
     },
     echo: {
