@@ -10,12 +10,12 @@ import {
   // GraphQLInt,
   // GraphQLFloat,
   GraphQLString,
-  // GraphQLList,
+  GraphQLList,
   GraphQLObjectType,
   // GraphQLEnumType,
 
   // This is used to create required fields and arguments
-  // GraphQLNonNull,
+  GraphQLNonNull,
 
   // This is the class we need to create the schema
   GraphQLSchema
@@ -25,11 +25,27 @@ import {
   DEFINE YOUR TYPES BELOW
 **/
 
+const Post = new GraphQLObjectType({
+  name: "Post",
+  description: "This is a post, son!",
+  fields: () => ({
+    _id: {type: new GraphQLNonNull(GraphQLString)},
+    title: {type: GraphQLNonNull(GraphQLString)},
+    content: {type: GraphQLString}
+  })
+});
+
 // This is the Root Query
 const Query = new GraphQLObjectType({
   name: 'BlogSchema',
   description: 'Root of the Blog Schema',
   fields: () => ({
+    posts:  {
+      type: new GraphQLList(Post),
+      resolve: function() {
+        return PostsList
+      }
+    },
     echo: {
       type: GraphQLString,
       description: 'Echo what you enter',
