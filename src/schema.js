@@ -63,7 +63,7 @@ const Query = new GraphQLObjectType({
     posts:  {
       type: new GraphQLList(Post),
       resolve: function() {
-        return [{_id: "some-id"}]
+        return PostsList
       }
     },
     echo: {
