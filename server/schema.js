@@ -11,6 +11,10 @@ import {
   GraphQLNonNull
 } from 'graphql';
 
+const mongo = require('promised-mongo');
+const db = mongo('mongodb://localhost:27017/mydb');
+const authorsCollection = db.collection('authors');
+
 const Author = new GraphQLObjectType({
   name: 'Author',
   description: 'Represent the type of an author of a blog post or a comment',
@@ -44,7 +48,9 @@ const Mutation = new GraphQLObjectType({
         twitterHandle: {type: GraphQLString}
       },
       resolve: function(rootValue, args) {
-        throw new Error('Not Implemented')
+        let author = Object.assign({}, args);
+        return db.authors.insert(author)
+          .then(_ => author)
       }
     }
   }
