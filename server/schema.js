@@ -26,19 +26,19 @@ const Author = new GraphQLObjectType({
 });
 
 const Query = new GraphQLObjectType({
-  name: 'RootQuery',
+  name: "RootQuery",
   fields: {
     authors: {
       type: new GraphQLList(Author),
       resolve: function() {
-        return [];
+        return authorsCollection.find().toArray();
       }
     }
   }
 });
 
 const Mutation = new GraphQLObjectType({
-  name: 'Mutations',
+  name: "Mutations",
   fields: {
     createAuthor: {
       type: Author,
@@ -50,7 +50,7 @@ const Mutation = new GraphQLObjectType({
       resolve: function(rootValue, args) {
         let author = Object.assign({}, args);
         return db.authors.insert(author)
-          .then(_ => author)
+          .then(_ => author);
       }
     }
   }
